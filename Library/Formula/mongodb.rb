@@ -4,25 +4,25 @@ require 'hardware'
 class Mongodb <Formula
   homepage 'http://www.mongodb.org/'
 
-  aka :mongo
-
   if Hardware.is_64_bit? and not ARGV.include? '--32bit'
-    url 'http://downloads.mongodb.org/osx/mongodb-osx-x86_64-1.4.4.tgz'
-    md5 '8791c484c1580d563f1a071e5eed9fa5'
-    version '1.4.4-x86_64'
+    url 'http://fastdl.mongodb.org/osx/mongodb-osx-x86_64-1.6.4.tgz'
+    md5 '3448de46d51c0dbe8195d3f80c8a7ecd'
+    version '1.6.4-x86_64'
   else
-    url 'http://downloads.mongodb.org/osx/mongodb-osx-i386-1.4.4.tgz'
-    md5 '8e31cc8b8f4879812cad217ce5b49b20'
-    version '1.4.4-i386'
+    url 'http://fastdl.mongodb.org/osx/mongodb-osx-i386-1.6.4.tgz'
+    md5 'dacf9ead604ae278330dfa227d906fc1'
+    version '1.6.4-i386'
   end
 
-  def skip_clean? path
-    true
+  skip_clean :all
+
+  def options
+    [['--32bit', 'Install the 32-bit version.']]
   end
 
   def install
     # Copy the prebuilt binaries to prefix
-    system "cp -prv * #{prefix}"
+    prefix.install Dir['*']
 
     # Create the data and log directories under /var
     (var+'mongodb').mkpath
