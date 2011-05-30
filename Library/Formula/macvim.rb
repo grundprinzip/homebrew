@@ -5,7 +5,7 @@ class Macvim < Formula
   url 'https://github.com/b4winckler/macvim/tarball/snapshot-57'
   version '7.3-57'
   md5 '2bf4630be2d59f62b8b70870ba1fe0a1'
-  head 'git://github.com/b4winckler/macvim.git', :branch => 'master'
+  head 'https://github.com/b4winckler/macvim.git', :branch => 'master'
 
   def options
   [
@@ -29,7 +29,7 @@ class Macvim < Formula
     # Set ARCHFLAGS so the Python app (with C extension) that is
     # used to create the custom icons will not try to compile in
     # PPC support (which isn't needed in Homebrew-supported systems.)
-    arch = Hardware.is_64_bit? ? 'x86_64' : 'i386'
+    arch = MacOS.prefer_64_bit? ? 'x86_64' : 'i386'
     ENV['ARCHFLAGS'] = "-arch #{arch}"
 
     args = ["--with-macsdk=#{MACOS_VERSION}",
@@ -71,7 +71,7 @@ class Macvim < Formula
 
     # Create MacVim vimdiff, view, ex equivalents
     executables = %w[mvimdiff mview mvimex]
-    executables << "vim" if ARGV.include? "--override-system-vim"
+    executables += %w[vi vim vimdiff view vimex] if ARGV.include? "--override-system-vim"
     executables.each {|f| ln_s bin+'mvim', bin+f}
   end
 
@@ -80,9 +80,9 @@ class Macvim < Formula
       #{prefix}
 
     To link the application to a normal Mac OS X location:
-      $ brew linkapps
+        brew linkapps
     or:
-      $ sudo ln -s #{prefix}/MacVim.app /Applications
+        sudo ln -s #{prefix}/MacVim.app /Applications
     EOS
   end
 end

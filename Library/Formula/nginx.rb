@@ -1,15 +1,9 @@
 require 'formula'
 
 class Nginx < Formula
-  url 'http://nginx.org/download/nginx-0.8.54.tar.gz'
-  head 'http://nginx.org/download/nginx-0.9.5.tar.gz'
   homepage 'http://nginx.org/'
-
-  if ARGV.build_head?
-    @md5='955960482bf55b537ad0db5cca8fd61a'
-  else
-    @md5='44df4eb6a22d725021288c570789046f'
-  end
+  url 'http://nginx.org/download/nginx-1.0.2.tar.gz'
+  md5 '8a528ccaab3ddba84e72443fa40b19e7'
 
   depends_on 'pcre'
 
@@ -42,16 +36,20 @@ class Nginx < Formula
   end
 
   def install
-    args = ["--prefix=#{prefix}", "--with-http_ssl_module", "--with-pcre",
-            "--conf-path=#{etc}/nginx/nginx.conf", "--pid-path=#{var}/run/nginx.pid",
+    args = ["--prefix=#{prefix}",
+            "--with-http_ssl_module",
+            "--with-pcre",
+            "--conf-path=#{etc}/nginx/nginx.conf",
+            "--pid-path=#{var}/run/nginx.pid",
             "--lock-path=#{var}/nginx/nginx.lock"]
+
     args << passenger_config_args if ARGV.include? '--with-passenger'
     args << "--with-http_dav_module" if ARGV.include? '--with-webdav'
 
     system "./configure", *args
     system "make install"
 
-    (prefix+'org.nginx.plist').write startup_plist
+    (prefix+'org.nginx.nginx.plist').write startup_plist
   end
 
   def caveats
@@ -65,8 +63,8 @@ any other web servers running port 80, of course.
 
 You can start nginx automatically on login with:
     mkdir -p ~/Library/LaunchAgents
-    cp #{prefix}/org.nginx.plist ~/Library/LaunchAgents/
-    launchctl load -w ~/Library/LaunchAgents/org.nginx.plist
+    cp #{prefix}/org.nginx.nginx.plist ~/Library/LaunchAgents/
+    launchctl load -w ~/Library/LaunchAgents/org.nginx.nginx.plist
 
     CAVEATS
   end
@@ -78,7 +76,7 @@ You can start nginx automatically on login with:
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>org.nginx</string>
+    <string>org.nginx.nginx</string>
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>
